@@ -106,4 +106,219 @@ body::after{
   inset:10px;
   border-radius:24px;
   border-left: 2px solid rgba(255,255,255,0.35);
-  borde
+  border-right:2px solid rgba(255,255,255,0.35);
+}
+
+/* ================= CSS “MX-5-ish” CAR ================= */
+.car{
+  position:absolute;
+  left:50%;
+  top:80%;
+  transform:translate(-50%,-50%);
+  width: 64px;
+  height: 34px;
+  filter: drop-shadow(0 10px 12px rgba(0,0,0,0.25));
+}
+
+/* body */
+.car::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius: 14px 18px 10px 10px;
+  background: linear-gradient(to bottom, #ff3b30, #d9140a);
+  box-shadow:
+    0 0 0 2px rgba(0,0,0,0.10) inset,
+    0 6px 0 rgba(0,0,0,0.10) inset;
+}
+
+/* cabin + wheels */
+.car::after{
+  content:"";
+  position:absolute;
+  left:10px; top:6px;
+  width: 40px; height: 18px;
+  border-radius: 12px 14px 8px 8px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0.12));
+  box-shadow:
+    0 0 0 2px rgba(0,0,0,0.10) inset,
+    /* wheels */
+    -10px 16px 0 0 #1b1d20,
+    42px 16px 0 0 #1b1d20;
+}
+
+/* ================= MAIN LAYOUT ================= */
+.route{
+  position:relative;
+  z-index:2;
+  width:min(980px, 100%);
+  margin:0 auto;
+  padding: 24px 16px 110px;
+}
+
+.hero{
+  min-height: 80vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:12px;
+  text-align:center;
+}
+.hero h1{
+  margin:0;
+  font-size: clamp(2.0rem, 5vw, 3.1rem);
+}
+.hero p{
+  margin:0;
+  color:var(--muted);
+  font-size: 1.05rem;
+  line-height:1.5;
+}
+
+.chip{
+  margin: 14px auto 0;
+  width: fit-content;
+  text-decoration:none;
+  color: var(--text);
+  background: rgba(255,255,255,0.70);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding: 10px 16px;
+  backdrop-filter: blur(8px);
+}
+
+/* ================= STOPS ================= */
+.stop{
+  position:relative;
+  min-height: 72vh;
+  display:flex;
+  align-items:center;
+  padding: 20px 0;
+}
+
+.stop.left .card{ margin-right:auto; }
+.stop.right .card{ margin-left:auto; }
+
+/* Marker: uses data-icon attr */
+.marker{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform: translate(-50%,-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.75);
+  border:1px solid rgba(0,0,0,0.12);
+  display:grid;
+  place-items:center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.18);
+}
+.marker::before{
+  content: attr(data-icon);
+  font-size: 22px;
+  line-height:1;
+}
+
+/* Cards */
+.card{
+  width: min(460px, 92%);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 18px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 18px 34px rgba(0,0,0,0.12);
+}
+.card.big{
+  width: min(620px, 94%);
+  padding: 22px;
+}
+.card h2{
+  margin:0 0 6px 0;
+  font-size:1.25rem;
+}
+.card p{
+  margin:0;
+  color: var(--muted);
+  line-height:1.55;
+}
+
+/* NOW section text spacing (prevents overlap) */
+#result{
+  margin-top: 12px;
+  line-height: 1.35;
+}
+
+/* Buttons */
+.row{
+  display:flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  align-items:center;
+}
+
+.btn{
+  appearance:none;
+  border:1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.75);
+  color: var(--text);
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 1rem;
+  cursor:pointer;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.10);
+}
+.btn.primary{
+  background: rgba(255,79,163,0.20);
+  border-color: rgba(255,79,163,0.35);
+}
+.hidden{ display:none !important; }
+
+/* Countdown */
+.countdown{
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.cd-box{
+  background: rgba(255,255,255,0.70);
+  border:1px solid rgba(0,0,0,0.12);
+  border-radius: 18px;
+  padding: 12px 10px;
+  text-align:center;
+  overflow:hidden;
+  backdrop-filter: blur(10px);
+}
+.cd-num{
+  font-size: clamp(1.25rem, 4vw, 1.85rem);
+  font-weight: 900;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+.cd-lbl{
+  margin-top: 4px;
+  font-size: clamp(0.85rem, 2.6vw, 0.95rem);
+  line-height: 1.1;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Heart explosion particles */
+.heart{
+  position: fixed;
+  z-index: 9999;
+  pointer-events:none;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 650px){
+  .countdown{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .stop{ min-height: 64vh; }
+  .road{ width: 120px; }
+}
