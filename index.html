@@ -3,55 +3,136 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Eine Frage für dich ❤️</title>
+  <title>Unsere Reise ❤️</title>
   <meta name="theme-color" content="#0b0b10" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="timeline" id="top">
-    <section class="panel" id="p1">
-      <div class="dot" aria-hidden="true"></div>
-      <h1>Hi du ❤️</h1>
-      <p>Ich hab dir eine kleine Scroll-Story gebaut.</p>
-      <a class="next" href="#p2">Weiter ↓</a>
-      <div class="hint">Tipp: Du kannst auch einfach scrollen.</div>
-    </section>
+  <!-- Fixed layers -->
+  <div class="road-layer" aria-hidden="true">
+    <div class="road"></div>
+    <div class="car" id="car" title="🚗">
+      <span class="car-emoji">🚗</span>
+    </div>
+  </div>
 
-    <section class="panel" id="p2">
-      <div class="dot" aria-hidden="true"></div>
-      <h2>Heute</h2>
-      <p>Ich wollte dir kurz sagen: Ich mag Zeit mit dir… sehr.</p>
-      <a class="next" href="#p3">Weiter ↓</a>
-    </section>
+  <main class="route" id="route">
+    <header class="hero">
+      <h1>Unsere kleine Reise 💖</h1>
+      <p>Scroll runter… und fahr mit mir durch unsere Highlights.</p>
+      <a class="chip" href="#s1">Los geht’s ↓</a>
+    </header>
 
-    <section class="panel" id="p3">
-      <div class="dot" aria-hidden="true"></div>
-      <h2>Dieses Wochenende</h2>
-      <p>Ich hol dich ab. Und ich hab was Kleines geplant. 🤭</p>
-      <a class="next" href="#p4">Weiter ↓</a>
-    </section>
-
-    <section class="panel" id="p4">
-      <div class="dot" aria-hidden="true"></div>
-      <h2>Bald: Valentinstag</h2>
-      <p>Und da dachte ich mir… lass uns den Tag besonders machen.</p>
-      <a class="next" href="#p5">Weiter ↓</a>
-    </section>
-
-    <section class="panel final" id="p5">
-      <div class="dot" aria-hidden="true"></div>
-      <h2>Also…</h2>
-      <h1 class="big">Willst du mein Valentinstags-Date sein? 💘</h1>
-
-      <div class="buttons">
-        <button id="yesBtn" class="primary">Ja 💖</button>
-        <button id="noBtn" class="ghost" type="button">Nein 🙃</button>
+    <!-- Stations -->
+    <section class="stop left" id="s1">
+      <div class="marker"></div>
+      <div class="card">
+        <h2>Oktoberfest 🍺</h2>
+        <p>Der Start von etwas richtig Schönem.</p>
       </div>
-
-      <p id="result" class="result" aria-live="polite"></p>
-
-      <a class="tiny" href="#top">↑ nochmal von vorn</a>
     </section>
+
+    <section class="stop right" id="s2">
+      <div class="marker"></div>
+      <div class="card">
+        <h2>Düsseldorf 🎃</h2>
+        <p>Mehr Momente, mehr Erinnerungen.</p>
+      </div>
+    </section>
+
+    <section class="stop left" id="s3">
+      <div class="marker"></div>
+      <div class="card">
+        <h2>Bremen 💗</h2>
+        <p>Ganz nah. Ganz wir.</p>
+      </div>
+    </section>
+
+    <section class="stop right" id="s4">
+      <div class="marker"></div>
+      <div class="card">
+        <h2>Christmas Garden Hamburg ❄️</h2>
+        <p>Winter vibes & du an meiner Seite.</p>
+      </div>
+    </section>
+
+    <section class="stop left" id="s5">
+      <div class="marker"></div>
+      <div class="card">
+        <h2>Timmendorf 🌊</h2>
+        <p>Meerluft, Kopf frei, Herz voll.</p>
+      </div>
+    </section>
+
+    <section class="stop right" id="s6">
+      <div class="marker"></div>
+      <div class="card">
+        <h2>Tiny House 🌲</h2>
+        <p>Ruhig. Cozy. Besonders.</p>
+      </div>
+    </section>
+
+    <!-- NOW / Interactive -->
+    <section class="stop now" id="now">
+      <div class="marker"></div>
+      <div class="card big">
+        <h2>Jetzt 💘</h2>
+
+        <p id="nowText" class="now-text"></p>
+
+        <div class="row" id="nowControls">
+          <button id="nowNext" class="btn">Weiter ↓</button>
+        </div>
+
+        <div class="row hidden" id="questionButtons">
+          <button id="yesBtn" class="btn primary">Yes 💐</button>
+          <button id="twoYesBtn" class="btn ghost">2× Yes 💐</button>
+        </div>
+
+        <div class="row hidden" id="threeYesRow">
+          <button id="threeYesBtn" class="btn primary">3× Yes 💐</button>
+        </div>
+
+        <p id="result" class="result" aria-live="polite"></p>
+
+        <a id="toFuture" class="chip hidden" href="#future">Weiter zur Zukunft ↓</a>
+      </div>
+    </section>
+
+    <!-- FUTURE / Countdown -->
+    <section class="stop future" id="future">
+      <div class="marker"></div>
+      <div class="card big">
+        <h2>Zukunft ✨</h2>
+        <p class="muted">Countdown bis Valentinstag:</p>
+
+        <div class="countdown" role="group" aria-label="Countdown bis Valentinstag">
+          <div class="cd-box">
+            <div class="cd-num" id="cdDays">--</div>
+            <div class="cd-lbl">Tage</div>
+          </div>
+          <div class="cd-box">
+            <div class="cd-num" id="cdHours">--</div>
+            <div class="cd-lbl">Stunden</div>
+          </div>
+          <div class="cd-box">
+            <div class="cd-num" id="cdMins">--</div>
+            <div class="cd-lbl">Minuten</div>
+          </div>
+          <div class="cd-box">
+            <div class="cd-num" id="cdSecs">--</div>
+            <div class="cd-lbl">Sekunden</div>
+          </div>
+        </div>
+
+        <p id="cdTarget" class="muted small"></p>
+        <a class="chip" href="#s1">Nochmal von vorn ↑</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p class="muted small">Made with ❤️ by Phelan</p>
+    </footer>
   </main>
 
   <script src="script.js"></script>
