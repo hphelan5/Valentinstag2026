@@ -1,163 +1,174 @@
-:root {
-  --bg: #0b0b10;
-  --card: rgba(255,255,255,0.06);
-  --text: rgba(255,255,255,0.92);
-  --muted: rgba(255,255,255,0.72);
-  --line: rgba(255,255,255,0.18);
-  --accent: rgba(255, 105, 180, 0.95);
-  --accent2: rgba(140, 160, 255, 0.85);
+// ===== Car scroll animation =====
+const car = document.getElementById("car");
+
+function updateCar() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
+
+  // Car moves from ~82% (start) to ~20% (near top) as you scroll down
+  const start = 82;
+  const end = 20;
+  const y = start + (end - start) * progress;
+
+  // small “wobble” left-right so it feels alive
+  const wobble = Math.sin(progress * Math.PI * 10) * 2.5; // px
+  car.style.top = `${y}%`;
+  car.style.transform = `translate(-50%, -50%) translateX(${wobble}px)`;
 }
 
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background:
-    radial-gradient(1100px 700px at 15% 10%, rgba(255,105,180,0.18), transparent 60%),
-    radial-gradient(900px 700px at 85% 90%, rgba(140,160,255,0.14), transparent 55%),
-    var(--bg);
-  color: var(--text);
+window.addEventListener("scroll", updateCar, { passive: true });
+window.addEventListener("resize", updateCar);
+updateCar();
+
+// ===== NOW panel story & logic =====
+const nowText = document.getElementById("nowText");
+const nowNext = document.getElementById("nowNext");
+const questionButtons = document.getElementById("questionButtons");
+const threeYesRow = document.getElementById("threeYesRow");
+const yesBtn = document.getElementById("yesBtn");
+const twoYesBtn = document.getElementById("twoYesBtn");
+const threeYesBtn = document.getElementById("threeYesBtn");
+const result = document.getElementById("result");
+const toFuture = document.getElementById("toFuture");
+
+const steps = [
+  "Die letzten 3,5 Monate mit dir waren die schönsten in meinem Leben.",
+  "Unser erstes Weihnachten liegt hinter uns… und jetzt steht Valentinstag vor der Tür.",
+  "Möchtest du mein Valentinstags-Date sein? 💐"
+];
+
+let stepIndex = 0;
+let locked = false;
+
+function renderStep() {
+  nowText.textContent = steps[stepIndex];
+
+  // Default state
+  result.textContent = "";
+  toFuture.classList.add("hidden");
+  threeYesRow.classList.add("hidden");
+
+  if (stepIndex < steps.length - 1) {
+    questionButtons.classList.add("hidden");
+    nowNext.classList.remove("hidden");
+    nowNext.textContent = "Weiter ↓";
+  } else {
+    // Question step
+    nowNext.classList.add("hidden");
+    questionButtons.classList.remove("hidden");
+  }
 }
 
-.timeline {
-  height: 100vh;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
-  padding: 22px 18px 22px 58px;
-  position: relative;
-  -webkit-overflow-scrolling: touch;
+nowNext.addEventListener("click", () => {
+  if (locked) return;
+  stepIndex = Math.min(stepIndex + 1, steps.length - 1);
+  renderStep();
+});
+
+function hearts(count = 24) {
+  for (let i = 0; i < count; i++) {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.textContent = "💖";
+    h.style.position = "fixed";
+    h.style.left = `${Math.random() * (window.innerWidth - 20)}px`;
+    h.style.top = `${window.innerHeight - 50}px`;
+    h.style.fontSize = `${14 + Math.random() * 18}px`;
+    h.style.pointerEvents = "none";
+    h.style.zIndex = "9999";
+    h.style.transition = "transform 1.4s ease-out, opacity 1.4s ease-out";
+    document.body.appendChild(h);
+
+    requestAnimationFrame(() => {
+      h.style.transform = `translateY(-160px) scale(${1.1 + Math.random() * 0.5})`;
+      h.style.opacity = "0";
+    });
+
+    setTimeout(() => h.remove(), 1400);
+  }
 }
 
-.timeline::before {
-  content: "";
-  position: fixed;
-  left: 30px;
-  top: 0;
-  height: 100vh;
-  width: 2px;
-  background: linear-gradient(to bottom, transparent, var(--line), transparent);
+function acceptYes() {
+  locked = true;
+  questionButtons.classList.add("hidden");
+  result.textContent = "Dann halt dir den 14.02. frei — weitere Infos kommen 💌";
+  hearts(30);
+  toFuture.classList.remove("hidden");
 }
 
-.panel {
-  scroll-snap-align: start;
-  min-height: calc(100vh - 44px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 14px;
-  padding: 26px;
-  margin: 0 0 18px 0;
-  background: var(--card);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 22px;
-  backdrop-filter: blur(10px);
-  position: relative;
+function acceptTwoYes() {
+  // show 3× Yes
+  result.textContent = "Okay… aber nur wenn du es wirklich meinst 😄";
+  hearts(14);
+  threeYesRow.classList.remove("hidden");
 }
 
-.dot {
-  position: absolute;
-  left: -42px;
-  top: 36px;
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  box-shadow: 0 0 26px rgba(255,105,180,0.38);
+function acceptThreeYes() {
+  locked = true;
+  threeYesRow.classList.add("hidden");
+  result.textContent = "Ich liebe dich ❤️ Und halt dir den 14.02. frei — weitere Infos kommen 💌";
+  hearts(36);
+  toFuture.classList.remove("hidden");
 }
 
-h1, h2 { margin: 0; }
-h1 { font-size: clamp(1.7rem, 4.5vw, 2.6rem); letter-spacing: 0.2px; }
-h2 { font-size: 1.2rem; color: rgba(255,255,255,0.88); }
+yesBtn.addEventListener("click", acceptYes);
+twoYesBtn.addEventListener("click", acceptTwoYes);
+threeYesBtn.addEventListener("click", acceptThreeYes);
 
-.big { font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.15; }
+// Initialize NOW text
+renderStep();
 
-p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 1.06rem;
-  line-height: 1.55;
+// ===== Countdown (next Feb 14) =====
+const cdDays = document.getElementById("cdDays");
+const cdHours = document.getElementById("cdHours");
+const cdMins = document.getElementById("cdMins");
+const cdSecs = document.getElementById("cdSecs");
+const cdTarget = document.getElementById("cdTarget");
+
+function nextValentinesDate() {
+  const now = new Date();
+  const year = now.getFullYear();
+
+  // Target: Feb 14, 00:00 local time (you can change to 18:00 if you want)
+  let target = new Date(year, 1, 14, 0, 0, 0); // month is 0-based; 1 = Feb
+  if (now > target) target = new Date(year + 1, 1, 14, 0, 0, 0);
+  return target;
 }
 
-.next {
-  margin-top: 10px;
-  display: inline-block;
-  width: fit-content;
-  color: var(--text);
-  text-decoration: none;
-  padding: 10px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.06);
+let target = nextValentinesDate();
+
+function pad2(n) {
+  return String(n).padStart(2, "0");
 }
 
-.hint {
-  margin-top: 10px;
-  font-size: 0.9rem;
-  color: rgba(255,255,255,0.55);
+function updateCountdown() {
+  const now = new Date();
+  const diff = target - now;
+
+  if (diff <= 0) {
+    cdDays.textContent = "0";
+    cdHours.textContent = "00";
+    cdMins.textContent = "00";
+    cdSecs.textContent = "00";
+    cdTarget.textContent = "Es ist Valentinstag! 💘";
+    return;
+  }
+
+  const totalSeconds = Math.floor(diff / 1000);
+  const days = Math.floor(totalSeconds / (24 * 3600));
+  const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
+  const mins = Math.floor((totalSeconds % 3600) / 60);
+  const secs = totalSeconds % 60;
+
+  cdDays.textContent = String(days);
+  cdHours.textContent = pad2(hours);
+  cdMins.textContent = pad2(mins);
+  cdSecs.textContent = pad2(secs);
+
+  cdTarget.textContent = `Ziel: ${target.toLocaleDateString("de-DE")} 💘`;
 }
 
-.buttons {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 8px;
-  align-items: center;
-}
-
-button {
-  appearance: none;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.08);
-  color: var(--text);
-  padding: 12px 16px;
-  border-radius: 14px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: transform 0.08s ease, background 0.2s ease;
-  touch-action: manipulation;
-}
-button:hover { background: rgba(255,255,255,0.12); transform: translateY(-1px); }
-button:active { transform: translateY(0px) scale(0.99); }
-
-.primary {
-  border-color: rgba(255,105,180,0.35);
-  background: rgba(255,105,180,0.16);
-}
-
-.ghost {
-  background: rgba(255,255,255,0.05);
-}
-
-.result {
-  margin-top: 10px;
-  font-size: 1.1rem;
-  color: rgba(255,255,255,0.88);
-  min-height: 1.4em;
-}
-
-.tiny {
-  margin-top: 16px;
-  width: fit-content;
-  font-size: 0.95rem;
-  color: rgba(255,255,255,0.72);
-  text-decoration: none;
-}
-
-/* Hearts */
-.heart {
-  position: fixed;
-  font-size: 18px;
-  pointer-events: none;
-  animation: floatUp 1.5s ease-out forwards;
-  z-index: 9999;
-}
-@keyframes floatUp {
-  from { transform: translateY(0) scale(1); opacity: 1; }
-  to   { transform: translateY(-160px) scale(1.35); opacity: 0; }
-}
-
-@media (max-width: 520px) {
-  .timeline { padding-left: 54px; padding-right: 14px; }
-  .dot { left: -40px; }
-}
+updateCountdown();
+setInterval(updateCountdown, 1000);
