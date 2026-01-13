@@ -1,24 +1,31 @@
-/* ================= CAR SCROLL MOTION ================= */
+/* ================= CAR + MAP PARALLAX ================= */
 const car = document.getElementById("car");
+const mapLayer = document.querySelector(".map-layer");
 
-function updateCar() {
+function updateScrollEffects() {
   const doc = document.documentElement;
   const scrollTop = doc.scrollTop || document.body.scrollTop;
   const scrollHeight = doc.scrollHeight - doc.clientHeight;
   const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
 
+  // car moves along the road
   const start = 82;
   const end = 20;
   const y = start + (end - start) * progress;
 
-  const wobble = Math.sin(progress * Math.PI * 10) * 2;
+  const wobble = Math.sin(progress * Math.PI * 10) * 1.5;
   car.style.top = `${y}%`;
   car.style.transform = `translate(-50%, -50%) translateX(${wobble}px)`;
+
+  // map parallax: move background slightly slower than page
+  // (feels like you're driving)
+  const mapShift = -(scrollTop * 0.18);
+  mapLayer.style.transform = `translate3d(0, ${mapShift}px, 0)`;
 }
 
-window.addEventListener("scroll", updateCar, { passive: true });
-window.addEventListener("resize", updateCar);
-updateCar();
+window.addEventListener("scroll", updateScrollEffects, { passive: true });
+window.addEventListener("resize", updateScrollEffects);
+updateScrollEffects();
 
 /* ================= HEART EXPLOSION ================= */
 function hearts(count = 26) {
@@ -30,7 +37,6 @@ function hearts(count = 26) {
     const size = 14 + Math.random() * 18;
     h.style.fontSize = `${size}px`;
 
-    // spawn around center-ish of viewport
     const x = window.innerWidth * (0.35 + Math.random() * 0.30);
     const y = window.innerHeight * (0.55 + Math.random() * 0.20);
     h.style.left = `${x}px`;
@@ -56,6 +62,7 @@ function hearts(count = 26) {
 /* ================= NOW STORY ================= */
 const nowText = document.getElementById("nowText");
 const nowNext = document.getElementById("nowNext");
+const rowNext = document.getElementById("rowNext");
 const questionButtons = document.getElementById("questionButtons");
 const threeYesRow = document.getElementById("threeYesRow");
 const yesBtn = document.getElementById("yesBtn");
@@ -80,10 +87,10 @@ function renderStep() {
   threeYesRow.classList.add("hidden");
 
   if (stepIndex < steps.length - 1) {
-    nowNext.classList.remove("hidden");
+    rowNext.classList.remove("hidden");
     questionButtons.classList.add("hidden");
   } else {
-    nowNext.classList.add("hidden");
+    rowNext.classList.add("hidden");
     questionButtons.classList.remove("hidden");
   }
 }
@@ -96,12 +103,14 @@ nowNext.addEventListener("click", () => {
 
 function acceptYes(msg) {
   locked = true;
-  // remove/hide buttons to avoid overlap
-  questionButtons.classList.add("hidden");
-  threeYesRow.classList.add("hidden");
+
+  // remove button rows so NOTHING can overlap anymore
+  if (questionButtons) questionButtons.remove();
+  if (threeYesRow) threeYesRow.remove();
+  if (rowNext) rowNext.remove();
 
   result.textContent = msg;
-  hearts(34);
+  hearts(36);
   toFuture.classList.remove("hidden");
 }
 
@@ -110,8 +119,8 @@ yesBtn.addEventListener("click", () => {
 });
 
 twoYesBtn.addEventListener("click", () => {
-  // hide the first row so nothing overlaps
-  questionButtons.classList.add("hidden");
+  // remove first row (prevents overlap), show 3rd yes
+  questionButtons.remove();
   threeYesRow.classList.remove("hidden");
   result.textContent = "Okay… aber nur wenn du es wirklich meinst 😄";
   hearts(14);
