@@ -238,6 +238,20 @@ body{
   overflow-wrap:anywhere;
 }
 
+.stop-img{
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin: 10px 0 12px;
+  border: 1px solid rgba(0,0,0,0.10);
+  box-shadow: 0 12px 22px rgba(0,0,0,0.10);
+}
+
+@media (max-width: 650px){
+  .stop-img{ height: 180px; }
+}
+
 /* Buttons */
 .row{
   display:flex;
