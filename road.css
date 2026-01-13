@@ -1,26 +1,20 @@
 :root{
-  /* Snapchat-ish map palette */
-  --map-grass-1:#bff3a7;
-  --map-grass-2:#a7ec8e;
-  --map-grass-3:#93e07f;
-
-  --field-1: rgba(16, 120, 60, 0.10);
-  --field-2: rgba(16, 120, 60, 0.06);
+  --grass1:#bff3a7;
+  --grass2:#a7ec8e;
+  --grass3:#93e07f;
 
   --water:#55b9ff;
-  --water-deep:#2b8fe6;
-  --water-edge:#a8e7ff;
+  --water2:#2b8fe6;
+  --waterEdge:#a8e7ff;
 
   --text:#0b1a12;
   --muted: rgba(11,26,18,0.72);
 
-  --card: rgba(255,255,255,0.78);
+  --card: rgba(255,255,255,0.82);
   --border: rgba(0,0,0,0.10);
 
   --road1:#3e4148;
   --road2:#2b2d32;
-
-  --accent:#ff4fa3;
 }
 
 *{ box-sizing:border-box; }
@@ -29,60 +23,56 @@ html{ scroll-behavior:smooth; }
 body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  color: var(--text);
-
-  /* base grass */
-  background:
-    radial-gradient(900px 650px at 20% 15%, rgba(255,255,255,0.55), transparent 60%),
-    radial-gradient(1200px 800px at 80% 85%, rgba(255,255,255,0.40), transparent 60%),
-    linear-gradient(to bottom, var(--map-grass-1), var(--map-grass-2), var(--map-grass-3));
+  color:var(--text);
+  background: linear-gradient(to bottom, var(--grass1), var(--grass2), var(--grass3));
+  overflow-x:hidden;
 }
 
-/* Map fields/paths texture */
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
+/* ================= MAP LAYER (moves with scroll) ================= */
+.map-layer{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
   pointer-events:none;
-  z-index:0;
-  background:
-    repeating-linear-gradient(25deg, var(--field-1) 0 16px, transparent 16px 54px),
-    repeating-linear-gradient(115deg, var(--field-2) 0 14px, transparent 14px 62px);
-  mix-blend-mode: multiply;
-  opacity:0.75;
+
+  /* this gets shifted by JS */
+  transform: translate3d(0,0,0);
+  will-change: transform;
 }
 
-/* Lakes layer – crisp shapes with shoreline + wave pattern */
-body::before{
+/* No stripes/texture anymore. Just a gentle light vignette */
+.map-layer::after{
   content:"";
-  position:fixed;
+  position:absolute;
   inset:0;
-  pointer-events:none;
-  z-index:0;
   background:
-    /* lake 1 */
-    radial-gradient(260px 190px at 18% 58%, var(--water) 0 62%, transparent 63%),
-    radial-gradient(255px 185px at 18% 58%, var(--water-edge) 0 66%, transparent 67%),
-    /* wave pattern on lake 1 */
-    radial-gradient(260px 190px at 18% 58%, transparent 0 52%, rgba(255,255,255,0.25) 53% 54%, transparent 55%),
-    radial-gradient(260px 190px at 18% 58%, transparent 0 46%, rgba(255,255,255,0.20) 47% 48%, transparent 49%),
-
-    /* lake 2 */
-    radial-gradient(300px 220px at 82% 36%, var(--water-deep) 0 62%, transparent 63%),
-    radial-gradient(295px 215px at 82% 36%, var(--water-edge) 0 66%, transparent 67%),
-    radial-gradient(300px 220px at 82% 36%, transparent 0 52%, rgba(255,255,255,0.22) 53% 54%, transparent 55%),
-    radial-gradient(300px 220px at 82% 36%, transparent 0 45%, rgba(255,255,255,0.18) 46% 47%, transparent 48%),
-
-    /* small lake 3 */
-    radial-gradient(220px 160px at 66% 78%, var(--water) 0 60%, transparent 61%),
-    radial-gradient(215px 155px at 66% 78%, var(--water-edge) 0 64%, transparent 65%),
-
-    /* subtle blur to unify, but keep edges crisp */
-    linear-gradient(transparent, transparent);
-  opacity:0.92;
+    radial-gradient(1000px 700px at 25% 20%, rgba(255,255,255,0.50), transparent 60%),
+    radial-gradient(1200px 800px at 80% 85%, rgba(255,255,255,0.35), transparent 60%);
+  opacity: 0.75;
 }
 
-/* ================= ROAD + CAR LAYER ================= */
+/* Lakes SVG */
+.lakes{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+
+.lake{
+  fill: var(--water);
+  stroke: var(--waterEdge);
+  stroke-width: 10;
+  opacity: 0.95;
+  filter: drop-shadow(0 18px 20px rgba(0,0,0,0.10));
+}
+
+/* add subtle “wave” feel via overlay */
+.lake{
+  paint-order: stroke fill;
+}
+
+/* ================= ROAD LAYER ================= */
 .road-layer{
   position:fixed;
   inset:0;
@@ -93,11 +83,12 @@ body::before{
 .road{
   position:absolute;
   left:50%;
-  top:0;
+  top:-200px;              /* extends beyond viewport */
   transform:translateX(-50%);
   width: 150px;
-  height:100%;
-  border-radius: 32px;
+  height: calc(100% + 400px); /* extends beyond viewport */
+  border-radius: 0;        /* no rounded ends */
+
   background: linear-gradient(to bottom, var(--road1), var(--road2));
   box-shadow:
     0 0 0 2px rgba(255,255,255,0.35) inset,
@@ -119,7 +110,6 @@ body::before{
     transparent 22px,
     transparent 44px
   );
-  border-radius:999px;
   opacity:0.86;
 }
 
@@ -127,28 +117,23 @@ body::before{
   content:"";
   position:absolute;
   inset:10px;
-  border-radius:26px;
   border-left: 2px solid rgba(255,255,255,0.35);
   border-right:2px solid rgba(255,255,255,0.35);
 }
 
-/* SVG car container */
+/* Car */
 .car{
   position:absolute;
   left:50%;
   top:80%;
   transform:translate(-50%,-50%);
-  width: 74px;
-  height: 38px;
-  filter: drop-shadow(0 12px 12px rgba(0,0,0,0.22));
+  width: 86px;
+  height: 42px;
+  filter: drop-shadow(0 14px 14px rgba(0,0,0,0.22));
 }
-.car svg{
-  width:100%;
-  height:100%;
-  display:block;
-}
+.car svg{ width:100%; height:100%; display:block; }
 
-/* ================= MAIN LAYOUT ================= */
+/* ================= CONTENT ================= */
 .route{
   position:relative;
   z-index:2;
@@ -183,14 +168,14 @@ body::before{
   width: fit-content;
   text-decoration:none;
   color: var(--text);
-  background: rgba(255,255,255,0.78);
+  background: rgba(255,255,255,0.86);
   border:1px solid var(--border);
   border-radius:999px;
   padding: 10px 16px;
   backdrop-filter: blur(10px);
 }
 
-/* ================= STOPS ================= */
+/* Stops */
 .stop{
   position:relative;
   min-height: 70vh;
@@ -199,30 +184,28 @@ body::before{
   padding: 22px 0;
 }
 
-.stop.left .card{ margin-right:auto; }
-.stop.right .card{ margin-left:auto; }
+/* pull cards closer to road so road stays free */
+.stop.left .card{
+  margin-right:auto;
+  transform: translateX(58px);   /* closer to road */
+}
+.stop.right .card{
+  margin-left:auto;
+  transform: translateX(-58px);  /* closer to road */
+}
 
-/* Marker uses data-icon */
+/* Marker: plain pin (no emoji) */
 .marker{
   position:absolute;
   left:50%;
   top:50%;
   transform: translate(-50%,-50%);
-  width: 50px;
-  height: 50px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.82);
-  border:1px solid rgba(0,0,0,0.12);
-  display:grid;
-  place-items:center;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.18);
-}
-
-.marker::before{
-  content: attr(data-icon);
-  font-size: 22px;
-  line-height:1;
+  width: 14px;
+  height: 14px;
+  border-radius:999px;
+  background: #ffffff;
+  border: 2px solid rgba(0,0,0,0.18);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.16);
 }
 
 /* Cards */
@@ -250,18 +233,10 @@ body::before{
   margin:0;
   color: var(--muted);
   line-height:1.55;
+  overflow-wrap:anywhere;
 }
 
-/* fix potential overlap in now-card */
-.card.big p{
-  overflow-wrap: anywhere;
-}
-#result{
-  margin-top: 12px;
-  line-height: 1.35;
-}
-
-/* Buttons */
+/* Buttons + no overlap */
 .row{
   display:flex;
   gap: 12px;
@@ -273,7 +248,7 @@ body::before{
 .btn{
   appearance:none;
   border:1px solid rgba(0,0,0,0.12);
-  background: rgba(255,255,255,0.82);
+  background: rgba(255,255,255,0.90);
   color: var(--text);
   padding: 12px 16px;
   border-radius: 14px;
@@ -291,6 +266,11 @@ body::before{
 
 .hidden{ display:none !important; }
 
+#result{
+  margin-top: 14px;
+  line-height: 1.35;
+}
+
 /* Countdown */
 .countdown{
   display:grid;
@@ -300,7 +280,7 @@ body::before{
 }
 
 .cd-box{
-  background: rgba(255,255,255,0.80);
+  background: rgba(255,255,255,0.90);
   border:1px solid rgba(0,0,0,0.12);
   border-radius: 18px;
   padding: 12px 10px;
@@ -336,5 +316,9 @@ body::before{
   .countdown{ grid-template-columns: repeat(2, minmax(0,1fr)); }
   .stop{ min-height: 62vh; }
   .road{ width: 130px; }
-  .car{ width: 70px; height: 36px; }
+  .car{ width: 82px; height: 40px; }
+
+  /* less horizontal shift on small screens */
+  .stop.left .card{ transform: translateX(28px); }
+  .stop.right .card{ transform: translateX(-28px); }
 }
