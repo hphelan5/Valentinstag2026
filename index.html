@@ -5,32 +5,72 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Unsere kleine Reise 💖</title>
 
-  <!-- GitHub Pages (Project Pages) -->
-  <link rel="stylesheet" href="/Valentinstag2026/road.css?v=8">
+  <link rel="stylesheet" href="/Valentinstag2026/road.css?v=20">
 </head>
 
 <body>
+  <!-- MAP BACKGROUND (parallax) -->
+  <div class="map-layer" aria-hidden="true">
+    <!-- wobblige Seen als SVG -->
+    <svg class="lakes" viewBox="0 0 1200 800" preserveAspectRatio="none">
+      <path class="lake" d="M195,500 C120,430 140,330 240,320 C330,310 390,360 410,430 C435,520 340,585 260,565 C230,560 210,545 195,500 Z"/>
+      <path class="lake" d="M930,250 C860,190 880,120 980,110 C1080,100 1140,155 1160,235 C1182,320 1090,370 1010,355 C970,348 948,325 930,250 Z"/>
+      <path class="lake" d="M770,610 C710,560 720,485 805,470 C900,452 950,520 960,585 C970,665 885,705 820,690 C795,685 782,675 770,610 Z"/>
+    </svg>
+  </div>
+
   <!-- ROAD + CAR -->
   <div class="road-layer" aria-hidden="true">
     <div class="road"></div>
 
-    <!-- CSS/SVG car (roadster) -->
+    <!-- MX-5-ish roadster (SVG) -->
     <div class="car" id="car" aria-hidden="true">
-      <svg viewBox="0 0 220 110" role="img" aria-label="Rotes Auto">
-        <!-- body -->
-        <path d="M35 68c8-18 22-34 46-38h54c19 0 33 9 44 25l10 13c4 5 6 10 6 16v4c0 8-6 14-14 14H33c-8 0-14-6-14-14v-6c0-6 2-11 6-14l10-6z"
-              fill="#e11d2e"/>
-        <!-- highlight -->
-        <path d="M52 58c6-12 16-22 32-25h46c13 0 24 6 34 18l7 10H52z" fill="#ff5a66" opacity="0.55"/>
-        <!-- windows -->
-        <path d="M78 50c8-9 16-13 28-13h30c9 0 18 5 26 16l4 6H78z" fill="#bfe9ff" opacity="0.85"/>
-        <!-- wheels -->
-        <circle cx="70" cy="86" r="14" fill="#111827"/>
-        <circle cx="160" cy="86" r="14" fill="#111827"/>
-        <circle cx="70" cy="86" r="7" fill="#6b7280"/>
-        <circle cx="160" cy="86" r="7" fill="#6b7280"/>
+      <svg viewBox="0 0 260 120" role="img" aria-label="Rotes Auto">
         <!-- shadow -->
-        <ellipse cx="110" cy="98" rx="92" ry="7" fill="#000" opacity="0.18"/>
+        <ellipse cx="130" cy="102" rx="104" ry="8" fill="#000" opacity="0.18"/>
+
+        <!-- body -->
+        <path d="M28 78
+                 C40 52, 70 36, 112 34
+                 L150 34
+                 C185 35, 206 50, 222 70
+                 L235 88
+                 C240 95, 236 104, 227 104
+                 L33 104
+                 C22 104, 16 95, 21 86
+                 L28 78 Z"
+              fill="#e11d2e"/>
+
+        <!-- highlight -->
+        <path d="M55 72
+                 C70 52, 93 43, 118 41
+                 L150 41
+                 C170 42, 188 52, 202 69
+                 L208 77
+                 L55 77 Z"
+              fill="#ff5964" opacity="0.55"/>
+
+        <!-- cabin / window -->
+        <path d="M112 46
+                 C123 39, 137 37, 151 38
+                 C170 40, 186 52, 196 68
+                 L123 68
+                 C115 64, 111 57, 112 46 Z"
+              fill="#bfe9ff" opacity="0.90"/>
+
+        <!-- windshield frame -->
+        <path d="M122 68 L196 68" stroke="rgba(0,0,0,0.20)" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- wheels -->
+        <g>
+          <circle cx="78" cy="96" r="15" fill="#111827"/>
+          <circle cx="78" cy="96" r="7" fill="#6b7280"/>
+          <circle cx="190" cy="96" r="15" fill="#111827"/>
+          <circle cx="190" cy="96" r="7" fill="#6b7280"/>
+        </g>
+
+        <!-- front light -->
+        <circle cx="34" cy="86" r="5" fill="#ffd1d1" opacity="0.85"/>
       </svg>
     </div>
   </div>
@@ -43,7 +83,7 @@
     </section>
 
     <section class="stop left" id="s1">
-      <div class="marker" data-icon="🍺"></div>
+      <div class="marker"></div>
       <div class="card">
         <h2>Oktoberfest 🍺</h2>
         <p>Der Start von etwas Besonderem.</p>
@@ -51,7 +91,7 @@
     </section>
 
     <section class="stop right" id="s2">
-      <div class="marker" data-icon="🎃"></div>
+      <div class="marker"></div>
       <div class="card">
         <h2>Düsseldorf 🎃</h2>
         <p>Herzklopfen und Gespenster.</p>
@@ -59,7 +99,7 @@
     </section>
 
     <section class="stop left" id="s3">
-      <div class="marker" data-icon="💗"></div>
+      <div class="marker"></div>
       <div class="card">
         <h2>Bremen 💗</h2>
         <p>Liebe erfahren.</p>
@@ -67,7 +107,7 @@
     </section>
 
     <section class="stop right" id="s4">
-      <div class="marker" data-icon="❄️"></div>
+      <div class="marker"></div>
       <div class="card">
         <h2>Christmas Garden Hamburg ❄️</h2>
         <p>Winter vibes & du an meiner Seite.</p>
@@ -75,7 +115,7 @@
     </section>
 
     <section class="stop left" id="s5">
-      <div class="marker" data-icon="🌊"></div>
+      <div class="marker"></div>
       <div class="card">
         <h2>Timmendorf 🌊</h2>
         <p>Meeresluft, Essen und Wir :).</p>
@@ -83,7 +123,7 @@
     </section>
 
     <section class="stop right" id="s6">
-      <div class="marker" data-icon="🌲"></div>
+      <div class="marker"></div>
       <div class="card">
         <h2>Tiny House 🌲</h2>
         <p>Ausatmen. Ruhe. Erneut verlieben.</p>
@@ -91,13 +131,13 @@
     </section>
 
     <section class="stop left" id="now">
-      <div class="marker" data-icon="💘"></div>
+      <div class="marker"></div>
       <div class="card big">
         <h2>Jetzt 💘</h2>
 
         <p id="nowText"></p>
 
-        <div class="row">
+        <div class="row" id="rowNext">
           <button class="btn" id="nowNext">Weiter ↓</button>
         </div>
 
@@ -116,7 +156,7 @@
     </section>
 
     <section class="stop right" id="future">
-      <div class="marker" data-icon="🏁"></div>
+      <div class="marker"></div>
       <div class="card big">
         <h2>Zukunft ✨</h2>
         <p>Countdown bis Valentinstag:</p>
@@ -147,6 +187,6 @@
     </section>
   </main>
 
-  <script src="/Valentinstag2026/road.js?v=8"></script>
+  <script src="/Valentinstag2026/road.js?v=20"></script>
 </body>
 </html>
