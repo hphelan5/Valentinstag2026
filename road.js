@@ -111,7 +111,6 @@ function acceptYes(msg) {
 
   result.textContent = msg;
   hearts(36);
-  toFuture.classList.remove("hidden");
 }
 
 yesBtn.addEventListener("click", () => {
