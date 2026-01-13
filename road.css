@@ -251,9 +251,6 @@ body{
 @media (max-width: 650px){
   .stop-img{ height: 180px; }
 }
-.rotate-left{
-  transform: rotate(-90deg);
-}
 
 /* Buttons */
 .row{
