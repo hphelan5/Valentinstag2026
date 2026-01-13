@@ -1,26 +1,30 @@
-/* ================= CAR + MAP PARALLAX ================= */
+/* ================= SAFE SELECTORS ================= */
 const car = document.getElementById("car");
 const mapLayer = document.querySelector(".map-layer");
 
+/* ================= CAR + MAP PARALLAX ================= */
 function updateScrollEffects() {
   const doc = document.documentElement;
   const scrollTop = doc.scrollTop || document.body.scrollTop;
-  const scrollHeight = doc.scrollHeight - doc.clientHeight;
-  const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
+  const scrollHeight = (doc.scrollHeight - doc.clientHeight) || 1;
+  const progress = Math.max(0, Math.min(1, scrollTop / scrollHeight));
 
-  // car moves along the road
+  // car moves along road
   const start = 82;
   const end = 20;
   const y = start + (end - start) * progress;
 
-  const wobble = Math.sin(progress * Math.PI * 10) * 1.5;
-  car.style.top = `${y}%`;
-  car.style.transform = `translate(-50%, -50%) translateX(${wobble}px)`;
+  const wobble = Math.sin(progress * Math.PI * 10) * 1.2;
+  if (car) {
+    car.style.top = `${y}%`;
+    car.style.transform = `translate(-50%, -50%) translateX(${wobble}px)`;
+  }
 
-  // map parallax: move background slightly slower than page
-  // (feels like you're driving)
-  const mapShift = -(scrollTop * 0.18);
-  mapLayer.style.transform = `translate3d(0, ${mapShift}px, 0)`;
+  // map parallax - subtle
+  if (mapLayer) {
+    const mapShift = -(scrollTop * 0.14);
+    mapLayer.style.transform = `translate3d(0, ${mapShift}px, 0)`;
+  }
 }
 
 window.addEventListener("scroll", updateScrollEffects, { passive: true });
@@ -69,7 +73,6 @@ const yesBtn = document.getElementById("yesBtn");
 const twoYesBtn = document.getElementById("twoYesBtn");
 const threeYesBtn = document.getElementById("threeYesBtn");
 const result = document.getElementById("result");
-const toFuture = document.getElementById("toFuture");
 
 const steps = [
   "Die letzten 3,5 Monate mit dir waren die schönsten in meinem Leben.",
@@ -81,53 +84,61 @@ let stepIndex = 0;
 let locked = false;
 
 function renderStep() {
+  if (!nowText) return;
   nowText.textContent = steps[stepIndex];
-  result.textContent = "";
-  toFuture.classList.add("hidden");
-  threeYesRow.classList.add("hidden");
+
+  if (result) result.textContent = "";
+  if (threeYesRow) threeYesRow.classList.add("hidden");
 
   if (stepIndex < steps.length - 1) {
-    rowNext.classList.remove("hidden");
-    questionButtons.classList.add("hidden");
+    if (rowNext) rowNext.classList.remove("hidden");
+    if (questionButtons) questionButtons.classList.add("hidden");
   } else {
-    rowNext.classList.add("hidden");
-    questionButtons.classList.remove("hidden");
+    if (rowNext) rowNext.classList.add("hidden");
+    if (questionButtons) questionButtons.classList.remove("hidden");
   }
 }
 
-nowNext.addEventListener("click", () => {
-  if (locked) return;
-  stepIndex = Math.min(stepIndex + 1, steps.length - 1);
-  renderStep();
-});
+if (nowNext) {
+  nowNext.addEventListener("click", () => {
+    if (locked) return;
+    stepIndex = Math.min(stepIndex + 1, steps.length - 1);
+    renderStep();
+  });
+}
 
 function acceptYes(msg) {
   locked = true;
 
-  // remove button rows so NOTHING can overlap anymore
-  if (questionButtons) questionButtons.remove();
-  if (threeYesRow) threeYesRow.remove();
-  if (rowNext) rowNext.remove();
+  // remove button rows to prevent overlap forever
+  if (questionButtons && questionButtons.parentNode) questionButtons.remove();
+  if (threeYesRow && threeYesRow.parentNode) threeYesRow.remove();
+  if (rowNext && rowNext.parentNode) rowNext.remove();
 
-  result.textContent = msg;
+  if (result) result.textContent = msg;
   hearts(36);
 }
 
-yesBtn.addEventListener("click", () => {
-  acceptYes("Dann halt dir den 14.02. frei – weitere Infos kommen 💌");
-});
+if (yesBtn) {
+  yesBtn.addEventListener("click", () => {
+    acceptYes("Dann halt dir den 14.02. frei – weitere Infos kommen 💌");
+  });
+}
 
-twoYesBtn.addEventListener("click", () => {
-  // remove first row (prevents overlap), show 3rd yes
-  questionButtons.remove();
-  threeYesRow.classList.remove("hidden");
-  result.textContent = "Okay… aber nur wenn du es wirklich meinst 😄";
-  hearts(14);
-});
+if (twoYesBtn) {
+  twoYesBtn.addEventListener("click", () => {
+    if (questionButtons && questionButtons.parentNode) questionButtons.remove();
+    if (threeYesRow) threeYesRow.classList.remove("hidden");
+    if (result) result.textContent = "Okay… aber nur wenn du es wirklich meinst 😄";
+    hearts(14);
+  });
+}
 
-threeYesBtn.addEventListener("click", () => {
-  acceptYes("Ich liebe dich ❤️ Halt dir den 14.02. frei – weitere Infos kommen 💌");
-});
+if (threeYesBtn) {
+  threeYesBtn.addEventListener("click", () => {
+    acceptYes("Ich liebe dich ❤️ Halt dir den 14.02. frei – weitere Infos kommen 💌");
+  });
+}
 
 renderStep();
 
@@ -145,10 +156,11 @@ function nextValentines() {
 }
 
 const target = nextValentines();
-
-function pad2(n){ return String(n).padStart(2, "0"); }
+const pad2 = (n) => String(n).padStart(2, "0");
 
 function updateCountdown() {
+  if (!cdDays || !cdHours || !cdMins || !cdSecs) return;
+
   const diff = target - new Date();
   if (diff <= 0) {
     cdDays.textContent = "0";
