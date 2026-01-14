@@ -76,7 +76,7 @@ const result = document.getElementById("result");
 
 const steps = [
   "Die letzten 3,5 Monate mit dir waren die schönsten in meinem Leben.",
-  "Unser erstes Weihnachten liegt hinter uns – und jetzt steht Valentinstag vor der Tür.",
+  "Unser erstes Weihnachten liegt hinter uns und jetzt steht Valentinstag vor der Tür.",
   "Möchtest du mein Valentinstags-Date sein? 💐"
 ];
 
@@ -129,7 +129,7 @@ if (twoYesBtn) {
   twoYesBtn.addEventListener("click", () => {
     if (questionButtons && questionButtons.parentNode) questionButtons.remove();
     if (threeYesRow) threeYesRow.classList.remove("hidden");
-    if (result) result.textContent = "Okay… aber nur wenn du es wirklich meinst 😄";
+    if (result) result.textContent = "Bis zum Mond und zurück.";
     hearts(14);
   });
 }
